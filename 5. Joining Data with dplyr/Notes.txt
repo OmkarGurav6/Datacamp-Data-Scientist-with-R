@@ -1,0 +1,32 @@
+
+Any inner join keeps an observation only if it has an exact match between the first and the second table.
+
+For an inner_join, either direction will yield a table that contains the same information!
+
+
+If we want to keep all the observations of only left of the tables we can use dplyr verb left_join. 
+
+If we want to keep all the observations of only right of the tables we can use dplyr verb right_join. 
+
+replace_na(list(columnname1 = value1, columnname2 = value2 )) is used to replace na in specified column. 
+
+We can join table to itself. This gives us idea about hierarchy.
+
+
+full join joins all observations from both tables even if they don't match.
+
+Mutating verbs : combine variables from 2 tables.
+eg inner_join, left_join, right_join, full_join
+
+Filtering join verbs keep or remove observations from the first table.
+It doesn't add new variables. semi_join() and anti_join()
+
+semi-join what observation in X are also in Y.
+anti-join what observation in X are not in Y.
+
+
+bind_rows() is used to stack table on another table.
+The output of bind_rows() will contain a column if that column appears in any of the inputs.
+
+
+

@@ -1,0 +1,188 @@
+
+Exploratory visualization : easily generated,data heavy and intended for small specialist audience.
+                            eg - your colleagues
+
+Explanatory visualization : labor intensive,dara specific and intended for broder audience.
+                            eg - presentation or publications
+
+Grammar of graphics : graphics - distinct layers of grammatical elements.
+                      meaningful plots through aesthetic mappings.
+
+The default shape for points only has a color attribute and not a fill attribute!
+Use fill when you have another shape (such as a bar), or when using a point that does have a fill and a color attribute.
+
+attributes can overwrite the aesthetics of your plot!
+
+label and shape are only applicable to categorical data.
+
+All our visible aesthetics also exist as attributes.
+
+Attributes are always called in the geom layer.
+
+Positions : Adjustment for overlapping
+            1. identity  2. dodge  3. stack  4. fill  5. jitter  6. jitterdodge  7. nudge 
+            eg : geom_point(position = "jitter")
+
+Each position can be accesed as a function.
+
+eg : posn_j <- position_jitter(0.1)
+     ggplot(........) + 
+     geom_point(position = posn_j)
+
+shortcut for this is geom_jitter()
+
+scale functions : scale_x_*()  scale_y_*()  scale_color_*()  scale_fill_*()  scale_shape_*()  scale_linetype_*() 
+                  scale_size_*()
+
+The first argument is always the name of the scale , after that most common are limits,breaks,expand and labels.
+eg : scale_x_continuous("sepal length", limits = c(2,8), breaks = seq(2,8,3), expand = c(0,0), labels = c("Setosa",
+     "versicolor","virginica"))
+
+If we want to change axis labels, we can do this with the labs function.
+
+You can make univariate plots (such as histograms), a y-axis will always be provided, even if you didn't ask for it.
+
+You can make univariate plots in ggplot2, but you will need to add a fake y axis by mapping y to zero.
+
+When using setting y-axis limits, you can specify the limits as separate arguments, or as a single numeric vector. 
+That is, ylim(lo, hi) or ylim(c(lo, hi)).
+
+The best data visulization serves a purpose that is form follows function.
+
+Function : Primary - Accurate and effiient represntations
+           Secondary - visually appealing, beautiful plots 
+
+Always consider the audience and purpose of every plot.
+
+Numeric summaries are precise but poor overview.
+data visual summaries are great for overview but poor precise.
+
+Best choices for aesthetics :  Efficient which provides a faster overview than numeric summaries
+                               Accurate which minimizes information loss
+
+
+Each geom can accept specific aesthetic mappings. eg : geom_point() needs x and y aes. other aes are optional.
+
+Avoid plotting only the mean without a measure of spread e.g. the standard deviation
+
+Combine jittering with alpha-blending if necessary to avoid overplotting.
+Another method is to change the shape.
+
+Always optimize the shape,size and alpha blending of points in a scatter plot.
+
+|----------------------------------------------------------
+| Plot types        |  Possible Geoms
+|----------------------------------------------------------
+| Scatter plots     |  points,jitter,abline,smooth,count
+|----------------------------------------------------------
+| Bar plots         |  histogram,bar,col,errorbar
+|----------------------------------------------------------
+| Line plots        |  line,path
+|----------------------------------------------------------
+
+
+Scatter plots (using geom_point()) are intuitive, easily understood, and very common, but we must always consider overplotting, particularly in the following four situations:
+
+ 1. Large datasets
+
+    alpha blending (i.e. adding transparency) is recommended when using solid shapes. Alternatively, you can use opaque, hollow shapes.
+    Small points are suitable for large datasets with regions of high density (lots of overlapping).
+
+ 2. Aligned values on a single axis
+
+    position_jitterdodge(jitter.width,dodge.width) can be useful.   
+
+ 3. Low-precision data
+
+    geom_jitter(width,alpha) is helpful.
+
+ 4. Integer data
+
+    geom_jitter(alpha, shape) is useful.
+
+
+Histogram : type of bar plot that shows binned distribution of a continuous variable.
+            only need x aes.
+            default value of binwidth is 30.
+            no space between bars.
+            X axis labels are between bars. They represent intervals and not actual values.
+         
+            position argument can take on the following values:
+
+            stack (the default): Bars for different groups are stacked on top of each other.
+            dodge: Bars for different groups are placed side by side.
+            fill: Bars for different groups are shown as proportions.
+            identity: Plot the values as they appear in the dataset.
+
+Bar plot with a categorical X axis : Use geom_bar() or geom_col()
+                                     geom_bar() - counts the no. of cases at each x position
+                                     geom_col() - plot actual values
+
+                                    We have three position options:
+
+                                       stack: The default
+                                       dodge: Preferred
+                                       fill: To show proportions
+
+                                    The function geom_col() is just geom_bar() where both the position and stat arguments are set to "identity". 
+                                    It is used when we want the heights of the bars to represent the exact values in the data.
+
+
+Line plots are very well suited for time series.
+
+
+Theme layer : All non-data ink
+              Visual elements which are not part of the data
+              3 types - text, line , rectangle . They can be modified using functions element_text(),
+                        element_line() and element_rect() resp.
+
+To modify an element , call its argument in the theme function and use appropriate element_function() 
+to specify what we want to change like size,color etc.         
+eg : theme(axis.title = element_text(color= "blue"))        
+
+element_blank() is used to remove any item in plot. eg : theme(line = element_blank())
+
+theme(legend.position = new_value)
+Here, the new value can be
+
+"top", "bottom", "left", or "right'": place it at that side of the plot.
+"none": don't draw it.
+c(x, y): c(0, 0) means the bottom-left and c(1, 1) means the top-right.
+
+To set a single whitespace value, use unit(x, unit), where x is the amount and unit is the unit of measure.
+The default unit is "pt" (points), which scales well with text. Other options include "cm", "in" (inches) and "lines" (of text).
+
+Ways to use themes : 1. From scratch(above points)
+                     2. Theme layer object
+                     3. Built-in themes ggplot2 or ggthemes pacakges
+                     4. Built-in thems from other packages 
+                     5. Update/set default theme (theme_update() theme_set())
+
+                    
+Defining theme objects : Useful when you have many plots
+                         provides consistency in style
+                         apply a specific theme everywhere
+
+Use theme_*() functions to access built-in themes. eg : theme_classic()
+theme_gray() is the default.
+theme_bw() is useful when you use transparency.
+theme_classic() is more traditional.
+theme_void() removes everything but the data.
+
+Updating theme is done using theme_update() function.
+
+Reusing a theme across many plots helps to provide a consistent style. You have several options for this.
+
+Assign the theme to a variable, and add it to each plot.
+Set your theme as the default using theme_set().
+
+
+
+
+
+
+
+
+
+
+

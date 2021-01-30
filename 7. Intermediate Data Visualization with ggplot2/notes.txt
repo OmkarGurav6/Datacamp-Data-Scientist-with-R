@@ -1,0 +1,203 @@
+
+Statistics layer : 2 categories of functions
+                   1. called from within a geom
+                   2. called independently
+
+All statistical functions start with 'stats_'.
+Even those functions called from geom layer can be accessed independently in this way.
+
+----------------------------------------------------------------
+|  stat_                 |      geom_
+|------------------------|--------------------------------------
+|  stat_bin()            |  geom_histogram(), geom_freqpoly()
+|------------------------|---------------------------------------
+|  stat_count()          |  geom_bar()
+|------------------------|-----------------------------------------
+|  stat_smooth()         |  geom_smooth()
+|------------------------|-------------------------------------------
+|  stat_boxplot()        |  geom_boxplot()
+|------------------------|-------------------------------------------
+|  stat_bindot()         |  geom_dotplot()
+|------------------------|-------------------------------------------
+|  stat_bin2d()          |  geom_bin2d()
+|------------------------|-------------------------------------------
+|  stat_binhex()         |  geom_hex()
+|------------------------|-------------------------------------------
+|  stat_contour()        |  geom_contour()
+|------------------------|-------------------------------------------
+|  stat_quantile()       |  geom_quantile()
+|------------------------|-------------------------------------------
+|  stat_sum()            |  geom_count()
+
+
+In geom_smooth(), default method uses 'loess'(locally estimated scatterplot smoothing) model. We can change method. eg : geom_smooth(method = "lm").
+We can turn off the model's 95% confidence interval (the ribbon) by setting se(means standard error) to FALSE.
+
+span Controls the amount of smoothing for the default loess smoother. Smaller numbers produce wigglier lines,
+larger numbers produce smoother lines. The default span for LOESS is 0.9
+A lower span will result in a better fit with more detail; but don't overdo it or you'll end up over-fitting!
+
+geom_count() is used for 1) low precision data and 2) integer data case of overplotting.
+
+geom_quantile() fits a quantile regression to the data and draws the fitted quantiles with lines. 
+This is as a continuous analogue to geom_boxplot().
+
+Linear regression predicts the mean response from the explanatory variables, 
+quantile regression predicts a quantile response (e.g. the median) from the explanatory variables.
+Specific quantiles can be specified with the quantiles argument.
+
+stat_sum() allows a special variable, ..prop.., to show the proportion of values within the dataset.
+
+If a few data points overlap, jittering is great. When you have lots of overlaps (particularly where continuous data has been rounded), 
+using stat_sum() to count the overlaps is more useful.
+
+stat_summary() summarize y values at distinct x values.
+stat_function() compute y values from a function of x values.
+stat_qq() perform calculations for a quantile-quantile plot.
+
+Summary statistics refers to a combination of location (mean or median) and spread (standard deviation or confidence interval).
+
+These metrics are calculated in stat_summary() by passing a function to the fun.data argument. mean_sdl(), 
+calculates multiples of the standard deviation and mean_cl_normal() calculates the t-corrected 95% CI.
+Arguments to the data function are passed to stat_summary()'s fun.args argument as a list.
+
+The default geom for stat_summary() is "pointrange" which is already great.
+
+
+Coordinate layer controls plot dimensions.
+The most commonly used function is coord_cartesian().
+
+For zooming in :  1. coord_cartesian(xlim=...)  
+                  2. scale_x_continuous(limits=...)  
+                  3. xlim(...)
+                      
+The big difference is that the scale functions change the underlying dataset, which affects calculations made by computed geoms (like histograms or smooth trend lines), 
+whereas coordinate functions make no changes to the dataset.
+
+
+height-to-width ration can be misleading.
+typically use 1:1 if data is on the same scale except when scales are same but their ranges differ widely.
+
+We can set the aspect ratio of a plot with coord_fixed(), which uses ratio = 1 as a default.
+A 1:1 aspect ratio is most appropriate when two continuous variables are on the same scale,
+
+The coord_*() layer functions offer two useful arguments that work well together: expand and clip.
+
+expand sets a buffer margin around the plot, so data and axes don't overlap. Setting expand to 0 draws the axes to the limits of the data.
+
+clip decides whether plot elements that would lie outside the plot panel are displayed or ignored ("clipped").
+
+Using scale_y_log10() and scale_x_log10() is equivalent to transforming our actual dataset before getting to ggplot2.
+
+Using coord_trans(), setting x = "log10" and/or y = "log10" arguments, transforms the data after statistics have been calculated.
+The plot will look the same as with using scale_*_log10(), but the scales will be different, 
+meaning that we'll see the original values on our log10 transformed axes. 
+This can be useful since log scales can be somewhat unintuitive.
+
+Typical axis modifications : 1. Aspect ratios - adjust for best perspective
+                             2. Transformation functions (coord_trans()) - adjust if original scale is inappropriate 
+                             3. Double x or y axes - add row and transformed values(axes). STRONGLY discouraged
+                                                     Double axes are most useful when you want to display the same value in two differnt units.
+                             4. Flipped axes - change direction of dependencies, change geometry orientation
+                                               Flipping axes means to reverse the variables mapped onto the x and y aesthetics. 
+
+
+We can only use 1 coord layer function in each plot.
+
+The coord_polar(theta=" ") function converts a planar x-y Cartesian plot to polar coordinates. 
+This can be useful if you are producing pie charts.
+
+two forms for pie charts - the typical filled circle, or a colored ring.
+Typical pie charts omit all of the non-data ink
+Pie charts are not really better than stacked bar charts
+
+Adding scale_x_continuous(limits= ) and geom_bar(width= ) converts it to colored ring
+
+
+Facets are straight forward but useful. They are small multiples.
+
+facets split up our overall dataset according to the levels in a categorical factor variable.
+ggplot2 will coerce variables to factors when used in facets.
+
+facet_grid(rows = vars(A), cols = vars(B)) can be also written as facet_grid(A ~ B)
+    Modern notation                                                formula notation
+
+While many ggplots still use the traditional formula notation, using vars() is now preferred.
+
+2 typical problems with facets : 1. poorly labeled  2. wrong or inappropriate order
+
+Easy solution is add labels in ggplot. 
+Better solution is relabel and rearrange factor variables in dataframe. For this we can use forcats package.
+forcats package is used for changing the order of levels or the values of factors.
+fct_relevel() - Manually reorder factor levels. 
+fct_recode() - Manually change levels and relabel.
+
+facet_grid has argument labeller with defalut value as label_value. 
+Common alternatives are:
+
+label_both: Displays both the value and the variable name
+label_context: Displays only the values or both the values and variables depending on whether multiple factors are faceted
+
+fct_rev() is used for reversing order.
+
+Facets are not appropriate to be used in following cases : for continuous variable if wildly different ranges 
+                                                           for categorical variable if many levels.  
+still we can use facets with some modifications like space and scales arguments.
+
+we can't use fixed coordinate space and have free axes at the same time.
+
+By default every facet of a plot has the same axes. 
+If the data ranges vary wildly between facets, it can be clearer if each facet has its own scale. 
+This is achieved with the scales argument to facet_grid().
+
+"fixed" (default): axes are shared between facets.
+free: each facet has its own axes.
+free_x: each facet has its own x-axis, but the y-axis is shared.
+free_y: each facet has its own y-axis, but the x-axis is shared
+
+When faceting by columns, "free_y" has no effect, but we can adjust the x-axis. 
+
+When you have a categorical variable with many levels which are not all present in each sub-group of another variable,
+it's usually desirable to drop the unused levels.
+
+By default, each facet of a plot is the same size. 
+This behavior can be changed with the spaces argument, which works in the same way as scales: 
+"free_x" allows different sized facets on the x-axis, 
+"free_y", allows different sized facets on the y-axis, 
+"free" allows different sizes in both directions.
+
+facet_wrap() : use cases - 1. When u want both x and y axes to be free on every individual plot
+                              i.e. not just per row or column as per facet_grid() 
+
+                           2. When your categorical variable has many levels i.e. too many sub plots for column or row wise faceting
+                              This is more typical scenario.
+
+facet_wrap() separates levels along one axis but wraps all the subsets across a given number of rows or columns.
+
+Facets are great for seeing subsets in a variable, but sometimes you want to see both those subsets and all values in a variable.
+margins argument is used in this case.
+
+FALSE (default): no margins.
+TRUE: add margins to every variable being faceted by.
+c("variable1", "variable2"): only add margins to the variables listed.
+
+"dynamite plots" (bar plots with error bars and bar plots with dodge) are not well suited for their intended purpose of depicting distributions. 
+If you really want error bars on bar plots, you can of course get them, but you'll need to set the positions manually. A point geom will typically serve you much better.
+
+Heat maps are poor data visualization method.
+color on continuous scale is problematic.
+
+Since heat maps encode color on a continuous scale, they are difficult to accurately decode,
+Hence, heat maps are most useful if you have a small number of boxes and/or a clear pattern that allows you to overcome decoding difficulties.
+To produce them, map two categorical variables onto the x and y aesthetics, along with a continuous variable onto fill. The geom_tile() layer adds the boxes.
+
+There are several alternatives to heat maps. The best choice really depends on the data and the story you want to tell with this data. If there is a time component, the most obvious choice is a line plot.
+
+
+
+
+
+
+
+
+

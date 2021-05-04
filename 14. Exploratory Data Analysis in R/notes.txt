@@ -32,7 +32,7 @@ Variance tells you the degree of spread in your data set. The more spread the da
 The variance (σ2), is defined as the sum of the squared distances of each term in the distribution from the mean (μ), divided by the number of terms in the distribution (N).
 generally divided by N-1
 
-squrer root of variance is called standard deviation.
+square root of variance is called standard deviation.
 
 The IQR describes the middle 50% of values when ordered from lowest to highest. To find the interquartile range (IQR), ​first find the median (middle value) of the lower and upper half of the data. 
 These values are quartile 1 (Q1) and quartile 3 (Q3). The IQR is the difference between Q3 and Q1.

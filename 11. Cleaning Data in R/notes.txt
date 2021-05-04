@@ -1,0 +1,135 @@
+
+assertive packadge is R package that provides readable check functions to ensure code integrity.
+(is_* functions) to check the state of your variables, and assertions (assert_* functions) to throw errors if they aren't in the right form.
+eg : is_numeric() , assert_is_numeric()
+
+
+# Create breaks
+breaks <- c(min(bike_share_rides$duration_min), 0, 1440, max(bike_share_rides$duration_min))
+
+# Create a histogram of duration_min
+ggplot(bike_share_rides, aes(duration_min)) + geom_histogram(breaks = breaks)
+
+Above code can be used to find out if there are any values out of range.
+
+assert_all_are_in_closed_range(data to check,lowerlimit,upperlimit) is used to find out if there are any values out of range.
+
+Handling out of range values : 1) Remove rows
+                               2) Treat as missing(NA) using replace(col,condition,replacement) from dplyr package
+                               3) Replace with range limit
+                               4) Replace with other value based on domain knowledge or knowledge of dataset
+
+assert_all_are_in_past() can be used for checking date constraint.
+
+Duplicates occur due to data entry errors or other human errors, bugs, design errors in data pipelines.
+most commonly arise from erros in joining data together from multiple sources.
+
+full duplicate - multiple rows have same value in every column.
+we  can find full duplicates using R's built in duplicated().
+
+drop full duplicate using dplyr's distinct(dataframe).
+
+partial duplicates - rows have much of same data but there may be some columns that differ between them.
+for finding partail duplicates count(unique columnname) and filter(n > 1) can be used.
+
+drop partial duplicates using distinct(columnnames, .keep_all=TRUE)
+.keep_all will keep all columns of dataframe instead of only columnnames mentioned in function.
+
+Another way to handle partial duplicates is to summarize them using summary statistic like mean or max.
+
+eg : bike_share_rides %>% 
+     # Count the number of occurrences of each ride_id
+     count(ride_id) %>% 
+     # Filter for rows with a count > 1
+     filter(n > 1)
+
+
+How do we end up with values that aren't members of the predefined set of categories(factors) :
+data entry errors where data is inputed using free text instead of multiple choice system as well as data parsing errors.
+
+categorical data problems : 1. Inconsistency within a category  2. Too many categories 
+
+str_trim() from stringr package is used to remove any white space from beginning of string and end of string
+but not middle of string.
+
+collapsing categories into 1 category is useful in case of many categories.
+use fct_collapse() from forcats package.
+
+Unstructured data problems : formatting inconsistency, information inconsistency, invalid data
+
+
+parse_date_time() parses an input vector into POSIXct date-time object. It differs from base::strptime() in two respects.
+First, it allows specification of the order in which the formats occur without the need to include separators and % prefix. Such a formating argument is refered to as "order". 
+Second, it allows the user to specify several format-orders to handle heterogeneous date-time character representations.
+
+cross field validation - sanity check, does this value make sense based on other values ?
+eg : sum of columns is diff in total column
+
+Methods to remove these : dropping data, setting to missing data(NA) , applying rules of domain knowledge
+Choose method according to dataset and sources of it.
+
+Case of wrong age
+
+accounts %>%
+  # theoretical_age: age of acct based on date_opened
+  mutate(theoretical_age = floor(as.numeric(date_opened %--% today(),"years"))) %>%
+  # Filter for rows where acct_age is different from theoretical_age
+  filter(theoretical_age != acct_age)
+
+To visualize missing values use visdat package function vis_miss(dataframe). Very much useful as we can see which columns
+contain missing values.
+
+Each missingness type requires specific approach and each type of approach has pros and cons.
+
+
+Edit distance is a way of measuring how different 2 strings are from each other based on 4 basic kind of typos
+which are inserting a character, deleting a character, substituting 1 character for another and transposing or swapping
+positions of 2 consecutive characters.
+
+Minimum edit distance is the fewest no. of typos you'd need to convert 1 string to another.
+
+Types of edit distance : 1. Damerau-Levenshtein - considers insertion, deletion, substitution and transposition.
+                         2. Levenshtein - considers only insertion, deletion and substitution. does not count transposition as 
+                                          a single action instead it counts as 2 deletion and insertion.
+                         3. Longest Common Subsequence (LCS) - considers insertion and deletion
+                         other types : Jaro-Winkler, Jaccard
+
+stringdist(1st string, 2nd string, method) function from stringdist package is used to calculate edit distance in R
+Default method is osa.
+
+The Optimal String Alignment distance / restricted Damerau-Levenshtein distance ( method='osa' ) is like the Levenshtein distance but also allows transposition of adjacent characters.
+Here, each substring may be edited only once. (For example, a character cannot be transposed twice to move it forward in the string).
+
+output of Jaccard method is on a scale of 0 to 1 where numbers close to 0 indicate that strings are more similar.
+
+If there are too many variations to collapse into 1 category use string distance.
+use stringdist join from fuzzyjoin package.
+
+Record linkage involves linking data together that comes from multiple sources that don't share a common identifer,
+but contain data on the same entity.
+
+But unlike joins, record linkage does not require exact matches between different pairs of data, and instead can find close matches using string similarity. 
+
+This is why record linkage is effective when there are no common unique keys between the data sources you can rely upon when linking data sources such as a unique identifier.
+
+pair_blocking(x,y, blocking_var = NULL ) from reclin package generates pairs using simple blocking(only consider pairs when they agree on the blocking variable).
+Generates all combinations of records from x and y where the blocking variables are equal.
+x     first data.frame
+y     second data.frame
+
+compare_pairs(pairs, by, default_comparator = identical()) Compare All Pairs Of Records.
+by    variables from x and y on which to compare the records.
+
+score_problink(pairs, model = NULL, var = "weight") Score Comparison Patterns Of Pairs Using The Probabilistic Linkage Framework
+
+pairs   a pairs object, such as generated by pair_blocking
+var     the name of the new variable that will be created 
+
+match_n_to_m Force n to m matching on a set of pairs
+
+The algorithm will try to select pairs in such a way each element of x is matched to at most n elements of y and 
+that each element of y is matched at most m elements of x. It tries to select elements in such a way that the total weight w of the selected elements is maximised.
+
+
+
+

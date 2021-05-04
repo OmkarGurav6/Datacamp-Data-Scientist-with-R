@@ -1,0 +1,127 @@
+
+ISO 8601 FORMAT : YYYY-MM-DD
+as.Date() only work with dates in the ISO order.
+
+Date objects are stored as days since 1970-01-01.
+
+If you plot a Date on the axis of a plot, you expect the dates to be in calendar order, 
+and that's exactly what happens with plot() or ggplot().
+
+ISO 8601 format : HH:MM:SS
+2 object types :   1. POSIXlt - list with named components
+                   2. POSIXct - seconds since 1970-01-01 00:00:00 YYYY-MM-DD HH:MM:SS
+
+POSIXct is more simple so it is generally used in dataframes.
+
+If no time zone is specified it is assumed to be local time. 
+The suffix on a time of Z denotes time in UTC time zone.
+
+as.POSXIct() doesn't recognise ISO 8601 specification of timezones, it will assume local timezone, unless
+we set argument tz.
+
+--------------------------------------------------------------------------------------------------------------------------------
+LUBRIDATE SECTION
+ymd() can handle dates that are in the right order but may or may not be exactly ISO 8601.
+eg : It ignores separators, units don't need to be numeric. we can pass it feb as month still it will interpret correctly.
+
+There are also functions like ymd() for datetimes. eg : ymd_hms(), mdy_hm() etc
+Unlike some of R's builtin functions if we don't specify timezone, lubridate will assume UTC.
+
+parse_date_time() also parses dates but we can specify argument order which describes order of components in date.
+we can pass it vector of dates and orders.
+
+when a date component is missing, it's just set to 1.
+eg : "May 1372", "1253"  "1372-05-01 UTC" "1253-01-01 UTC"
+
+make_date() produces objects of class Date.
+make_datetime() Efficient Creation Of Date-Times From Numeric Representations
+
+eg : 
+  make_datetime(
+  year = 1970L,
+  month = 1L,
+  day = 1L,
+  hour = 0L,
+  min = 0L,
+  sec = 0,
+  tz = "UTC"
+)
+
+make_date(year = 1970L, month = 1L, day = 1L)
+
+yday() - day of year a.k.a. Julian day(1-366)
+wday() - weekday(1-7)
+
+All these extractor functions can also be used to set component.
+
+Sometimes it's nicer (especially for plotting or tables) to have named months. 
+Both the month() and wday() (day of the week) functions have additional arguments label and abbr to achieve just that. 
+
+Set label = TRUE to have the output labelled with month (or weekday) names, and abbr = FALSE for those names to be written in full rather than abbreviated.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+difftime is used for calculating time interval. units argument is used to specify time unit of difference.
+eg : "secs","mins","hours","days" etc
+If we don't specify unit argument , difftime will attempt to pick appropriate units.
+difftime is base function. 
+
+today() gives todays date as date object.
+now() gives instant moment as POSIXct object.
+Both functions are from lubridate.
+
+when dealing with human interpretaions of dates and time you want to use periods.
+
+To create period in lubridate we have to use function of the appropriate unit in plural form.
+eg : days() will give 1 day. If we specify argument x = n it will give n days. By default it is 1.
+
+
+Duration is constructed similarly except the duration functions start with d.
+eg : ddays() will give seconds of days.
+
+If you want to account for the fact that time units, in this case days, have different lengths (i.e. due to daylight savings), you want a period days(). 
+If you want the time 86400 seconds in the future you use a duration ddays().
+
+ymd("2018-01-31") + months(1)
+
+In general lubridate returns the same day of the month in the next month, but since the 31st of February doesn't exist lubridate returns a missing value, NA.
+
+There are alternative addition and subtraction operators: %m+% and %m-% that have different behavior. Rather than returning an NA for a non-existent date, they roll back to the last existing date.
+
+Creating intervals : datetime1 %--% datetime or interval(datetime1, datetime2)
+
+int_start() and int_end() extract start and end of interval.
+int_length() finds length of interval in seconds.
+
+To compare datetime to an interval use the %within% operator. It will return TRUE if datetime is inside the interval.
+
+To comapre 2 intervals, use int_overlaps which will return TRUE if there are any times that are inside both intervals.
+
+
+force_tz() - change the timezone without changing the clock time.
+eg : force_tz(mar_11, tzone = "American/New_York")
+
+with_tz() - view the same instant in a different timejoin.
+eg : with_tz(mar_11, tzone = "American/New_York")
+
+parse_date_time() can be slow.
+
+Fast parsing functions :
+
+1. fastPOSIXct() from fasttime package is used to read in dates formatted in the standard order : ymd hms
+
+2. fast_strptime() from lubridate works lot like parse_date_time() but instead of an order argument, it takes
+   format argument. Components must be prefixed by % and should explicitly include any separators.
+   eg : format = "%Y-%m-%d"
+
+An easy way to output dates is to use the stamp() function in lubridate. 
+stamp() takes a string which should be an example of how the date should be formatted, and returns a function that can be used to format dates.
+
+
+
+
+
+
+
+
+

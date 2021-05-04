@@ -1,0 +1,90 @@
+
+Contingency table is a useful way to represent the total counts of observations
+that fall into each combination of the levels of categorical variables.
+
+droplevels() function would keep levels that have just 1 or 2 counts; 
+it only drops levels that don't exist in a dataset.
+
+To drop these levels with less counts we have to filter them out first and then we can apply droplevels().
+
+Bar charts can tell dramatically different stories depending on whether they represent counts or proportions and,
+if proportions, what the proportions are conditioned on.
+
+
+
+Boxplots are useful where several distributions need to be compared at once and also to detect outliers.
+Disadvantage of boxplot is that it can not indicate when a distribution has more than 1 mode.
+
+There are generally 4 characteristics of distributions that are of interest.
+
+1)measures of center are mean,median and mode.
+
+2)measures of variability(spread) define how far away the data points tend to fall from the center.
+
+Range : the difference between the highest and lowest values.
+Interquartile range : the range of the middle half of a distribution.
+Standard deviation : average distance from the mean.
+Variance : average of squared distances from the mean.
+
+The variance is a measure of variability. It is calculated by taking the average of squared deviations from the mean.
+Variance tells you the degree of spread in your data set. The more spread the data, the larger the variance is in relation to the mean.
+
+The variance (σ2), is defined as the sum of the squared distances of each term in the distribution from the mean (μ), divided by the number of terms in the distribution (N).
+generally divided by N-1
+
+squrer root of variance is called standard deviation.
+
+The IQR describes the middle 50% of values when ordered from lowest to highest. To find the interquartile range (IQR), ​first find the median (middle value) of the lower and upper half of the data. 
+These values are quartile 1 (Q1) and quartile 3 (Q3). The IQR is the difference between Q3 and Q1.
+
+Height of boxplot is IQR.
+
+The most commonly used measure of variance is standard deviation.
+
+IQR is useful in situations in which dataset is highly skewed or has extreme observations 
+
+median and IQR measure the central tendency and spread, respectively, but are robust to outliers and non-normal data.
+
+If there are outliers it is better to use the median and IQR to measure the center and spread. 
+If there isn't much variability and there are not any outliers then it may be better to use the mean and the
+standard deviation
+If the shape is skewed,median and IQR are needed.
+
+3)Shape of distribution is described in terms of the modality and the skew. 
+
+The modality of a distribution is determined by the number of peaks it contains. 
+Unimodal means that the distribution has only one peak, which means it has only one frequently occurring score, clustered at the top.
+A bimodal distribution has two values that occur frequently (two peaks) and a multimodal has two or several frequently occurring values.
+
+Skewness is a measurement of the symmetry of a distribution.
+
+Therefore it describes how much a distribution differs from a normal distribution, either to the left or to the right. 
+The skewness value can be either positive, negative or zero. 
+
+A negative skew occurs if the data is piled up to the right, which leaves the tail pointing to the left. 
+Note that positive skews are more frequent than negative ones.
+
+4) Outliers 
+
+														
+zero-inflated probability distribution means a distribution that allows for frequent zero-valued observations.
+
+Strategies : 1. Analyze the two components separately
+             2. Collapse into 2 level categorical variable
+
+table() tabulates the number of cases in each category.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

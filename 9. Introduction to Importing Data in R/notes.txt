@@ -1,0 +1,134 @@
+
+Data of 5 types : data from flat files
+                  data from excel
+                  data from databases
+                  data from web
+                  data from statistical software
+
+flat files are typically simple text files that display data as tables.
+csv(Comma-separated values) file is flat file.
+
+utils package is loaded by default when we start R.
+It contains function read.csv("path_of_csv_file", stringsAsFactors=FALSE)
+1 st argument is path to file we want to import in R.
+we can choose to import columns as actual strings or factors.
+By default stringsAsFactors argument is true so it would convert strings into factors.
+By default header=TRUE, sep=","
+
+we can use file.path function to build a path to a file. 
+
+tab delimited file is flat file. To import this we need read.delim() similar to read.csv().
+eg : .txt files
+By default, it sets the sep argument to "\t" (fields in a record are delimited by tabs) and 
+the header argument to TRUE (the first row contains the field names).
+
+values are separated by / in exotic file format.To import this we use read.table().
+It can read any tabular file as a dataframe. no. of arguments is huge.
+read.table("path_of_csv_file",header =TRUE,sep="/",stringsAsFactors=FALSE)
+
+header=TRUE means we are telling R that 1st row of text file contains variable names.
+By default it is set to false. 
+sep argument is "" by default.
+
+read.table() is main function.
+read.csv()=wrapper for CSV
+read.delim()=wrapper for tab-delimited files
+
+read.csv2() and read.delim2() exist because of local diff. 
+In these fun default sep argument is different.
+
+utils is verbose and slower.
+
+
+readr package - fast,easy. Made by hadley wickham
+In this package read_csv is used as read.csv and read_tsv is used as read.delim 
+In both functions, 1st argument is path to file you want to import.
+In readr strings are not imported as factors by default so equvalent of stringsAsFactors argument is not required. 
+The only difference is read_csv outputs tibble (supercharged version of dataframe.)
+All of hadley packages work with tibbles.
+
+In readr read_delim() is main function. read_csv() and read_tsv() are wrapper.
+tsv( tab-separated values.)
+
+delim argument of read_delim from readr package is equivalent to sep argument of read.table from util package.
+col_names argument is similar to header argument. By default col_names = TRUE. 
+Setting it to FALSE leads automatic generation of column names.
+
+If col_types is set to NULL, the default, functions from the readr package will try to find the correct types themselves.
+col_types will be guessed from first 30 rows on input.
+You can manually set the types with a string, where each character denotes the class of the column: character, 
+double, integer and logical. _ skips the column as a whole.
+
+Another way of setting the types of the imported columns is using collectors. 
+Collector functions can be passed in a list() to the col_types argument of read_ functions 
+to tell them how to interpret values in a column.
+col_integer(): the column should be interpreted as an integer.
+col_factor(levels, ordered = FALSE): the column should be interpreted as a factor with levels.
+
+skip specifies the number of lines you're ignoring in the flat file before actually starting to import data.
+
+n_max specifies the number of lines you're actually importing.
+
+data.table package is used mainly for data manipulation.
+fread() function from this package is used to import data. It is super fast and good for very big data files.
+It is similar to read.table(). fread can infer columntypes and field separators without having to specify these.
+
+fread() is improved read.table()
+It has 2 imp arguments drop and select,to drop or select variables of interest.
+
+
+readxl package - hadley wickham
+2 main functions : 1. excel_sheets() list diff sheets
+                   2. read_excel() actually import data into R
+readxl is able to handle both .xls and .xlsx files and it is fast.
+
+By default 1st sheet is imported when using read_excel().
+We can explicitly tell which sheet to import by setting sheet argument index or name.
+col_names is by default TRUE. col_types is by default NULL which means R guess data types of diff columns.
+But we can manually specify col types like "numeric","date","blank". blank means ignoring that column.
+skip argument is also used. n_max is also used.
+
+
+gdata package - entire suite of tools for data manipulation.
+                supercharges basic R to make handling data less painful.
+                can handle xls format but we can easily install driver to support new xlsx format.
+                No function to list diff sheets in excel file
+
+perl converts data in excel sheet to csv file.csv file is read using read.csv().
+All read.table function arguments are also available for gdata read.xls()
+This function is inefficient in case of large data.
+readxl is better for reading xsl data.
+
+
+XLConnect package - work with Excel through R
+                    Bridge between Excel and R
+                    You can do any action u could do within Excel but u can do it from inside R
+                    work with xls and xlsx files. easy to use.
+
+xlconnect depends on java.
+loadWorkbook() is used to loading a workbook into R.
+workbook object is the actual bridge between R and Excel.
+
+we can use getSheets() on workbook object to get list of all sheets.
+readWorkSheet is similar to read_excel().
+we can specify from which row and which column to start reading information. eg : readWorkSheet(book,sheet=3,startRow=2,startCol=2,endRow=4,endCol=4)
+
+we can use createSheet to create new sheet. eg : createSheet(book,"year_2020")
+we can populate new sheet with the data for which we can use writeWorksheet() eg: writeWorksheet(book,pop_2020,sheet="year_2020")
+
+If we open excel file we will not see the new sheet. we have to explicitly save entire workbook to file for changes to take effect.
+we can do this with saveWorkbook() eg: saveWorkbook(book,file="cities2.xlsx")
+
+renameSheet() can change name of sheet.
+removeSheet() removes specified sheet.
+
+reproducibility is the key in XLConnect.
+
+
+
+
+
+
+
+
+
